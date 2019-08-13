@@ -10,4 +10,13 @@ module.exports = function(app) {
     });
   });
 
+  app.get("/saved", function(req, res) {
+    db.Article.find({"saved": true})
+    .then(function(dbArticle) {
+      res.render("saved", {
+        Article: dbArticle
+      });
+    });
+  });
+
 };

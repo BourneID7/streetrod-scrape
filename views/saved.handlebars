@@ -13,9 +13,6 @@
                     <a class="nav-link" href="/saved">Saved Articles</a>
                 </li>
                 <li>
-                    <button class="btn btn-primary btn-sm" type="button" id="scrape">Scrape New Articles</button>
-                </li>
-                <li>
                     <button class="btn btn-primary btn-sm" type="button" id="clear">Clear Articles</button>
                 </li>
             </ul>
@@ -26,18 +23,21 @@
     <div class="jumbotron jumbotron-fluid">
         <div class="container centered">
             <h1 class="display-4">Hotrodders</h1>
-            <p class="lead">See the latest articles</p>
+            <p class="lead">Saved articles</p>
         </div>
     </div>
     <div class="container" id="articles">
         {{#each Article}}
-            <div class="article">
-                <h4>{{this.title}}</h4>
-                <h6>{{this.author}}</h6>
-                <p>{{this.excerpt}}</p>
-                <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
-                <button type="button" class="btn btn-primary btn-save" data-id="{{this._id}}">Save article</button>
-            </div>
+            {{#if saved}}
+                <div class="article">
+                    <h4>{{this.title}}</h4>
+                    <h6>{{this.author}}</h6>
+                    <p>{{this.excerpt}}</p>
+                    <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
+                    <button type="button" class="btn btn-primary btn-unsave" data-id="{{this._id}}">Remove from saved articles</button>
+                    <button type="button" class="btn btn-primary btn-note" data-id="{{this._id}}">Add a note</button>
+                </div>
+            {{/if}}
         {{/each}}
 
     </div>
