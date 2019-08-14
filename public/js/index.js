@@ -39,3 +39,38 @@ $(".btn-save").on("click", function(){
     });
 });
 
+$(".btn-unsave").on("click", function(){
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+        method: "PUT",
+        url: "/unsaved" + thisId,
+        data: {
+            saved: false
+        }
+    })
+    .then(function() {
+        $.ajax({
+            method: "GET",
+            url: "/articles"
+        })
+        .then(function(){
+           location.reload(true);
+        });
+    });
+});
+
+$(".save-note").on("click", function(){
+    var thisId = $(this).attr("data-id");
+    $.ajax({
+        method: "POST",
+        url: "/note" + thisId,
+        data: {
+            body: $(".noteBody").val()
+        }
+    })
+    .then(function(data){
+        console.log(data);
+    });
+    $(".noteBody").val("");
+});
+

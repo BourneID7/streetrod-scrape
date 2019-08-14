@@ -44,6 +44,10 @@ main {
     background: #8ac0d7;
     border: none;
 }
+.btn-danger{
+    background: #c91010;
+    border: none;
+}
 .btn-primary:hover {
     background: #69a6bd;
     border: none;
@@ -74,6 +78,9 @@ main {
 }
 .article a:hover {
     color: #3e5c68;
+}
+.note-sm {
+    font-size: .85rem;
 }
 
 

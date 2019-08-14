@@ -1,3 +1,38 @@
+<!-- Modal -->
+{{!-- <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="noteModalLabel">Notes for article {{this._id}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="card">
+            <div class="card-body">
+                <p>Notes:</p>
+                {{#each Note}}
+                    <p class="note-sm">{{this.body}}</p>
+                    <button type="button" class="btn btn-danger btn-sm delete-note" data-id="{{this._id}}">X</button>
+                {{/each}}
+            </div>
+        </div>
+        <form>
+            <div class="form-group">
+                <label for="noteFormControlTextarea1">Enter a note</label>
+                <textarea class="form-control noteBody" id="noteFormControlTextarea1" rows="3"></textarea>
+            </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary save-note" data-id="{{this._id}}">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div> --}}
+
 <header class="container-fluid">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark nav-fixed">
         <a class="navbar-brand" href="/">Hotrod Scraper</a>
@@ -30,15 +65,36 @@
         {{#each Article}}
             {{#if saved}}
                 <div class="article">
-                    <h4>{{this.title}}</h4>
-                    <h6>{{this.author}}</h6>
-                    <p>{{this.excerpt}}</p>
-                    <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
-                    <button type="button" class="btn btn-primary btn-unsave" data-id="{{this._id}}">Remove from saved articles</button>
-                    <button type="button" class="btn btn-primary btn-note" data-id="{{this._id}}">Add a note</button>
-                </div>
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4>{{this.title}}</h4>
+                            <h6>{{this.author}}</h6>
+                            <p>{{this.excerpt}}</p>
+                            <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
+                            <button type="button" class="btn btn-primary btn-unsave" data-id="{{this._id}}">Remove from saved articles</button>
+                            {{!-- <button type="button" class="btn btn-primary btn-note" data-id="{{this._id}}">Article notes</button> --}}
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p>Notes:</p>
+                                    {{#each Note}}
+                                        <p class="note-sm">{{this.body}}</p>
+                                        <button type="button" class="btn btn-danger btn-sm delete-note" data-id="{{this._id}}">X</button>
+                                    {{/each}}
+                                </div>
+                            </div>
+                            <form>
+                                <div class="form-group">
+                                    <label for="noteFormControlTextarea1">Enter a note</label>
+                                    <textarea class="form-control noteBody" id="noteFormControlTextarea1" rows="3"></textarea>
+                                </div>
+                                <button type="button" class="btn btn-primary btn-sm save-note" data-id="{{this._id}}">Save changes</button>
+                            </form>
+                        </div>
+                    </div> <!-- /row -->
+                </div> <!-- /article -->
             {{/if}}
         {{/each}}
-
-    </div>
+    </div> <!-- /articles -->
 </main>

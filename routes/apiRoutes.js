@@ -4,6 +4,8 @@ var axios = require("axios");
 var db = require("../models");
 
 module.exports = function(app) {
+
+    //route to scape new articles from website
     app.get("/scrape", function(req, res) {
         axios.get("https://www.hotrod.com/")
         .then(function(response) {
@@ -49,6 +51,7 @@ module.exports = function(app) {
         });
     });
 
+    //route to get all articles in db
     app.get("/articles", function(req, res) {
         db.Article.find({})
         .then(function(dbArticle) {
@@ -59,6 +62,7 @@ module.exports = function(app) {
         });
     });
 
+    //route to delete all articles from db
     app.delete("/clear", function(req, res) {
         db.Article.deleteMany({})
         .then(function(dbArticle) {
@@ -69,6 +73,7 @@ module.exports = function(app) {
         });
     });
 
+    //route to add article to saved list
     app.put("/saved:id", function(req, res) {
         var id = req.params.id;
         console.log("id: ", id);
@@ -80,7 +85,61 @@ module.exports = function(app) {
         })
         .catch(function(err) {
             console.log(err);
+        });
+    });
+
+    //route to remove article from saved articles list. Does not remove article from db
+    app.put("/unsaved:id", function(req, res) {
+        var id = req.params.id;
+        console.log("id: ", id);
+
+        db.Article.findByIdAndUpdate({"_id": id}, 
+        {"$set": {"saved": false}})
+        .then(function(dbArticle) {
+            res.json(dbArticle);
         })
-    })
+        .catch(function(err) {
+            console.log(err);
+        });
+    });
+
+    //route to save a new note & associate to article
+    app.post("/note:id", function(req, res) {
+        var id = req.params.id;
+
+        db.Note.create(req.body)
+        .then(function(dbNote) {
+            return db.Article.findByIdAndUpdate(
+                {"_id": id}, {"$push": {"note": dbNote._id}}, {new: true});
+        })
+        // .then(function(dbArticle) {
+        //     res.json(dbArticle)
+        .then(function() {
+            db.Article.find({})
+            .populate("note")
+            .then(function(dbArticle) {
+                res.json(dbArticle)
+            })
+            .catch(function(err) {
+                console.log(err);
+            });    
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+    });
+
+    //route to get all articles & populate with their notes
+    // app.get("/populatednote", function(req, res){
+
+    //     db.Article.find({})
+    //     .populate("note")
+    //     .then(function(dbArticle) {
+    //         res.json(dbArticle)
+    //     })
+    //     .catch(function(err) {
+    //         console.log(err);
+    //     });    
+    // });
 
 };
