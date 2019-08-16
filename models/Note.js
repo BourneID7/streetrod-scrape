@@ -1,12 +1,12 @@
-var mongoose = require("mongoose");
-var Schema = mongoose.Schema;
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-var NoteSchema = new Schema ({
+const NoteSchema = new Schema ({
     body: {
         type: String,
     }
 });
 
-var Note = mongoose.model("Note", NoteSchema);
+const Note = mongoose.model("Note", NoteSchema);
 
 module.exports = Note;

@@ -78,9 +78,10 @@
                             <div class="card">
                                 <div class="card-body">
                                     <p>Notes:</p>
-                                    {{#each Note}}
-                                        <p class="note-sm">{{this.body}}</p>
-                                        <button type="button" class="btn btn-danger btn-sm delete-note" data-id="{{this._id}}">X</button>
+                                    {{#each note}}
+                                        <p class="note-sm">{{ this }}
+                                            <button type="button" class="btn btn-danger btn-sm delete-note" data-id="{{this._id}}">x</button>
+                                        </p>
                                     {{/each}}
                                 </div>
                             </div>

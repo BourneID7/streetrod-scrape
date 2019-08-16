@@ -1,7 +1,7 @@
-var mongoose = require("mongoose");
-var cheerio = require("cheerio");
-var axios = require("axios");
-var db = require("../models");
+const mongoose = require("mongoose");
+const cheerio = require("cheerio");
+const axios = require("axios");
+const db = require("../models");
 
 module.exports = function(app) {
 
@@ -11,18 +11,18 @@ module.exports = function(app) {
         .then(function(response) {
 
             // load response data into cheerio
-            var $ = cheerio.load(response.data);
+            const $ = cheerio.load(response.data);
             // console.log(response.data);
 
             $(".entry-summary").each(function(i, el) {
-                var $el = $(el)
+                const $el = $(el)
 
-                var title = $el.children("a.link").attr("title");
-                var author = $el.find("a.author-link").attr("title");
-                var link = $el.children("a.link").attr("href");
-                var excerpt = $el.find("p.excerpt").text();
+                const title = $el.children("a.link").attr("title");
+                const author = $el.find("a.author-link").attr("title");
+                const link = $el.children("a.link").attr("href");
+                const excerpt = $el.find("p.excerpt").text();
 
-                var result = {
+                const result = {
                     title,
                     author,
                     link,
@@ -75,7 +75,7 @@ module.exports = function(app) {
 
     //route to add article to saved list
     app.put("/saved:id", function(req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         console.log("id: ", id);
 
         db.Article.findByIdAndUpdate({"_id": id}, 
@@ -90,7 +90,7 @@ module.exports = function(app) {
 
     //route to remove article from saved articles list. Does not remove article from db
     app.put("/unsaved:id", function(req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
         console.log("id: ", id);
 
         db.Article.findByIdAndUpdate({"_id": id}, 
@@ -105,12 +105,12 @@ module.exports = function(app) {
 
     //route to save a new note & associate to article
     app.post("/note:id", function(req, res) {
-        var id = req.params.id;
+        const id = req.params.id;
 
         db.Note.create(req.body)
         .then(function(dbNote) {
             return db.Article.findByIdAndUpdate(
-                {"_id": id}, {"$push": {"note": dbNote._id}}, {new: true});
+                {"_id": id}, {"$push": {"note": dbNote._id, "body": dbNote}}, {new: true});
         })
         // .then(function(dbArticle) {
         //     res.json(dbArticle)
@@ -129,17 +129,21 @@ module.exports = function(app) {
         });
     });
 
-    //route to get all articles & populate with their notes
-    // app.get("/populatednote", function(req, res){
-
-    //     db.Article.find({})
-    //     .populate("note")
-    //     .then(function(dbArticle) {
-    //         res.json(dbArticle)
-    //     })
-    //     .catch(function(err) {
-    //         console.log(err);
-    //     });    
-    // });
+    //route to delete note
+    app.delete('/note:id', function (req, res) {
+        db.Note.findOneAndRemove({ _id: req.params.id }, function (err, response) {
+            if (err) throw err;
+            db.Article.updateOne(
+                { "note": req.params.id },
+                { "$pull": { "note": req.params.id } },
+            )
+            .then(function(dbArticle){
+                res.json(dbArticle);
+            })
+            .catch(function(err) {
+                console.log(err)
+            });
+        });
+    });
 
 };

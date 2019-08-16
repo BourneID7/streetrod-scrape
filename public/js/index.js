@@ -68,9 +68,33 @@ $(".save-note").on("click", function(){
             body: $(".noteBody").val()
         }
     })
-    .then(function(data){
-        console.log(data);
+    .then(function(){
+        $.ajax({
+            method: "GET",
+            url: "/articles"
+        })
+        .then(function(){
+           location.reload(true);
+        });
     });
     $(".noteBody").val("");
+});
+
+$(".delete-note").on("click", function(){
+    var thisId = $(this).attr("data-id");
+    console.log(thisId);
+    $.ajax({
+        method: "DELETE",
+        url: "/note" + thisId,
+    })
+    .then(function() {
+        $.ajax({
+            method: "GET",
+            url: "/articles"
+        })
+        .then(function(){
+           location.reload(true);
+        });
+    });
 });
 

@@ -41,7 +41,7 @@ main {
 }
 .btn-primary {
     margin: .5rem;
-    background: #8ac0d7;
+    background: #5b91a5;
     border: none;
 }
 .btn-danger{
@@ -49,7 +49,7 @@ main {
     border: none;
 }
 .btn-primary:hover {
-    background: #69a6bd;
+    background: #8ac0d7;
     border: none;
 }
 .btn-primary:visited {
@@ -81,6 +81,11 @@ main {
 }
 .note-sm {
     font-size: .85rem;
+    list-style: none;
+    padding-bottom: 3px;
+}
+.delete-note {
+    float: right;
 }
 
 
