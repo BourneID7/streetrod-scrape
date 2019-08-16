@@ -62,9 +62,15 @@ module.exports = function(app) {
         });
     });
 
-    //route to delete all articles from db
+    //route to delete all articles & notes from db
     app.delete("/clear", function(req, res) {
         db.Article.deleteMany({})
+        .then(function() {
+            db.Note.deleteMany({})
+        })
+        .then(function() {
+            db.Article.find({})
+        })
         .then(function(dbArticle) {
             res.json(dbArticle);
         })
@@ -104,34 +110,26 @@ module.exports = function(app) {
     });
 
     //route to save a new note & associate to article
-    app.post("/note:id", function(req, res) {
+    app.post("/note/:id", function(req, res) {
         const id = req.params.id;
+        console.log("note for article id: ", id);
 
         db.Note.create(req.body)
         .then(function(dbNote) {
             return db.Article.findByIdAndUpdate(
-                {"_id": id}, {"$push": {"note": dbNote._id, "body": dbNote}}, {new: true});
+                {"_id": id}, {"$push": {note: dbNote._id} }, {new: true});
         })
-        // .then(function(dbArticle) {
-        //     res.json(dbArticle)
-        .then(function() {
-            db.Article.find({})
-            .populate("note")
-            .then(function(dbArticle) {
-                res.json(dbArticle)
-            })
-            .catch(function(err) {
-                console.log(err);
-            });    
+        .then(function(dbArticle) {
+            res.json(dbArticle)
         })
-        .catch(function(err){
+        .catch(function(err) {
             console.log(err);
-        });
+        });    
     });
 
     //route to delete note
-    app.delete('/note:id', function (req, res) {
-        db.Note.findOneAndRemove({ _id: req.params.id }, function (err, response) {
+    app.delete('/note/:id', function (req, res) {
+        db.Note.findByIdAndDelete({ _id: req.params.id }, function (err, response) {
             if (err) throw err;
             db.Article.updateOne(
                 { "note": req.params.id },

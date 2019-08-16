@@ -14,13 +14,17 @@ $("#clear").on("click", function() {
         method: "DELETE",
         url: "/clear"
     })
-    .then(function(){
-        location.reload(true);
+    .then(function() {
+        $.ajax({
+            method: "GET",
+            url: "/articles"
+        })
     });
+    location.reload(true);
 });
 
 $(".btn-save").on("click", function(){
-    var thisId = $(this).attr("data-id");
+    const thisId = $(this).attr("data-id");
     $.ajax({
         method: "PUT",
         url: "/saved" + thisId,
@@ -40,7 +44,7 @@ $(".btn-save").on("click", function(){
 });
 
 $(".btn-unsave").on("click", function(){
-    var thisId = $(this).attr("data-id");
+    const thisId = $(this).attr("data-id");
     $.ajax({
         method: "PUT",
         url: "/unsaved" + thisId,
@@ -60,10 +64,10 @@ $(".btn-unsave").on("click", function(){
 });
 
 $(".save-note").on("click", function(){
-    var thisId = $(this).attr("data-id");
+    const thisId = $(this).attr("data-id");
     $.ajax({
         method: "POST",
-        url: "/note" + thisId,
+        url: "/note/" + thisId,
         data: {
             body: $(".noteBody").val()
         }
@@ -77,15 +81,14 @@ $(".save-note").on("click", function(){
            location.reload(true);
         });
     });
-    $(".noteBody").val("");
 });
 
 $(".delete-note").on("click", function(){
-    var thisId = $(this).attr("data-id");
+    const thisId = $(this).attr("data-id");
     console.log(thisId);
     $.ajax({
         method: "DELETE",
-        url: "/note" + thisId,
+        url: "/note/" + thisId,
     })
     .then(function() {
         $.ajax({
