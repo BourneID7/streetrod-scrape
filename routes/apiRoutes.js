@@ -68,9 +68,6 @@ module.exports = function(app) {
         .then(function() {
             db.Note.deleteMany({})
         })
-        .then(function() {
-            db.Article.find({})
-        })
         .then(function(dbArticle) {
             res.json(dbArticle);
         })
