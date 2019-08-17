@@ -65,11 +65,13 @@ $(".btn-unsave").on("click", function(){
 
 $(".save-note").on("click", function(){
     const thisId = $(this).attr("data-id");
+    const body = $(this).closest("div").find(".noteBody").val();
+    console.log("body: ", body);
     $.ajax({
         method: "POST",
         url: "/note/" + thisId,
         data: {
-            body: $(".noteBody").val()
+            body: body
         }
     })
     .then(function(){

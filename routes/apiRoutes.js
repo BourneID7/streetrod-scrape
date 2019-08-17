@@ -113,6 +113,8 @@ module.exports = function(app) {
     app.post("/note/:id", function(req, res) {
         const id = req.params.id;
         console.log("note for article id: ", id);
+        console.log("req.body: ", req.body)
+
 
         db.Note.create(req.body)
         .then(function(dbNote) {
