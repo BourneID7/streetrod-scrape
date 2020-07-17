@@ -4,6 +4,14 @@ const Schema = mongoose.Schema;
 const NoteSchema = new Schema ({
     body: {
         type: String,
+    },
+},
+{
+    toObject: {
+    virtuals: true,
+    },
+    toJSON: {
+    virtuals: true,
     }
 });
 

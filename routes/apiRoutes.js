@@ -7,36 +7,38 @@ module.exports = function(app) {
 
     //route to scape new articles from website
     app.get("/scrape", function(req, res) {
-        axios.get("https://www.hotrod.com/")
+        axios.get("https://www.allrecipes.com/")
         .then(function(response) {
 
             // load response data into cheerio
             const $ = cheerio.load(response.data);
             // console.log(response.data);
 
-            $(".entry-summary").each(function(i, el) {
+            $(".fixed-recipe-card").each(function(i, el) {
                 const $el = $(el)
 
-                const title = $el.children("a.link").attr("title");
-                const author = $el.find("a.author-link").attr("title");
-                const link = $el.children("a.link").attr("href");
-                const excerpt = $el.find("p.excerpt").text();
+                const title = $el.find("span.fixed-recipe-card__title-link").text();
+                const author = $el.find("ul.cook-submitter-info").children("h4").text();
+                const link = $el.find("a.fixed-recipe-card__title-link").attr("href");
+                const excerpt = $el.find("img.fixed-recipe-card__img").attr("alt");
+                const imgUrl = $el.find("img.fixed-recipe-card__img").attr("data-original-src");
 
                 const result = {
                     title,
                     author,
                     link,
-                    excerpt
+                    excerpt,
+                    imgUrl
                 };
 
-                console.log("scrape result: ", result);
+                // console.log("scrape result: ", result);
 
                 if (title && link && excerpt) {
 
                     // create new Article using result object
                     db.Article.create(result)
                     .then(function(dbArticle) {
-                        console.log(dbArticle);
+                        console.log("article created: ", dbArticle);
                         // res.json(dbArticle);
                     })
                     .catch(function(err) {
@@ -52,15 +54,31 @@ module.exports = function(app) {
     });
 
     //route to get all articles in db
-    app.get("/articles", function(req, res) {
+
+    app.get('/', (req, res) => {
+        // get all items from db collection
         db.Article.find({})
-        .then(function(dbArticle) {
-            res.json(dbArticle)
+        // handlebars no longer accepts direct mongoDb object. Map mongo object to plain javascript object
+        .then(oldArticleObject => {
+            const newArticleObject = {
+                articles: oldArticleObject.map(data => {
+                    return {
+                        _id: data._id,
+                        title: data.title,
+                        author: data.author,
+                        link: data.link,
+                        excerpt: data.excerpt,
+                        saved: data.saved,
+                        imgUrl: data.imgUrl
+                    }
+                })
+            }
+            res.render("index", {
+                articles: newArticleObject.articles
+            })
         })
-        .catch(function(err) {
-            console.log(err);
-        });
-    });
+        .catch(error => res.status(500).send(error));
+      })
 
     //route to delete all articles & notes from db
     app.delete("/clear", function(req, res) {

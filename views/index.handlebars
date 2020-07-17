@@ -30,13 +30,29 @@
         </div>
     </div>
     <div class="container" id="articles">
-        {{#each Article}}
+        {{#each articles}}
             <div class="article">
+                {{#if imgUrl}}
+                <div class="row">
+                    <div class="col-md-9">
+                        <h4>{{this.title}}</h4>
+                        <h6>{{this.author}}</h6>
+                        <p>{{this.excerpt}}</p>
+                        <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
+                        <button type="button" class="btn btn-primary btn-save" data-id="{{this._id}}">Save article</button>
+                    </div>
+                    <div class="col-md-3">
+                        <img src="{{this.imgUrl}}" alt="{{this.title}}">
+                    </div>
+                </div>
+                {{/if}}
+                {{#unless imgUrl}}
                 <h4>{{this.title}}</h4>
                 <h6>{{this.author}}</h6>
                 <p>{{this.excerpt}}</p>
                 <p><a href="{{this.link}}" target="_blank">{{this.link}}</a></p>
                 <button type="button" class="btn btn-primary btn-save" data-id="{{this._id}}">Save article</button>
+                {{/unless}}
             </div>
         {{/each}}
 

@@ -28,8 +28,17 @@ const ArticleSchema = new Schema ({
     note: [{
         type: Schema.Types.ObjectId,
         ref: "Note"
-    }],
-});
+    }],  
+    }, 
+    {
+        toObject: {
+        virtuals: true,
+        },
+        toJSON: {
+        virtuals: true,
+        }
+    }
+);
 
 const Article = mongoose.model("Article", ArticleSchema);
 

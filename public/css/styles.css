@@ -79,6 +79,9 @@ main {
 .article a:hover {
     color: #3e5c68;
 }
+.article img {
+    max-width: 100%;
+}
 .note-sm {
     font-size: .85rem;
     list-style: none;
