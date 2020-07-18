@@ -81,17 +81,13 @@ module.exports = function(app) {
       })
 
     //route to delete all articles & notes from db
-    app.delete("/clear", function(req, res) {
+    app.delete("/clear", (req, res) => {
         db.Article.deleteMany({})
-        .then(function() {
-            db.Note.deleteMany({})
-        })
-        .then(function(dbArticle) {
+        .then(dbArticle => {
             res.json(dbArticle);
         })
-        .catch(function(err) {
-            console.log(err);
-        });
+        .then(db.Note.deleteMany({}))
+        .catch(err => console.log(err));
     });
 
     //route to add article to saved list
@@ -100,14 +96,40 @@ module.exports = function(app) {
         console.log("id: ", id);
 
         db.Article.findByIdAndUpdate({"_id": id}, 
-        {"$set": {"saved": true}})
-        .then(function(dbArticle) {
-            res.json(dbArticle);
+        {"$set": {"saved": true}}, () => {
+            db.Article.find({"saved": true})
         })
-        .catch(function(err) {
-            console.log(err);
-        });
+        .then(dbArticle => {
+            res.json(dbArticle)
+        })
+        .catch(err => console.log(err));
     });
+
+    //route to get all saved articles
+    app.get("/saved", (req, res) => {
+        db.Article.find({"saved": true})
+        // handlebars no longer accepts direct mongoDb object. Map mongo object to plain javascript object
+        .then(oldArticleObject => {
+            const newArticleObject = {
+                articles: oldArticleObject.map(data => {
+                    return {
+                        _id: data._id,
+                        title: data.title,
+                        author: data.author,
+                        link: data.link,
+                        excerpt: data.excerpt,
+                        saved: data.saved,
+                        imgUrl: data.imgUrl,
+                        note: data.note
+                    }
+                })
+            }
+            res.render("saved", {
+                articles: newArticleObject.articles
+            })
+        })
+        .catch(error => res.status(500).send(error));
+    })
 
     //route to remove article from saved articles list. Does not remove article from db
     app.put("/unsaved:id", function(req, res) {
@@ -116,32 +138,27 @@ module.exports = function(app) {
 
         db.Article.findByIdAndUpdate({"_id": id}, 
         {"$set": {"saved": false}})
-        .then(function(dbArticle) {
-            res.json(dbArticle);
+        .then(dbArticle => {
+            res.json(dbArticle)
         })
-        .catch(function(err) {
-            console.log(err);
-        });
+        .catch(err => console.log(err));
     });
 
     //route to save a new note & associate to article
-    app.post("/note/:id", function(req, res) {
+    app.post("/note/:id", (req, res) => {
         const id = req.params.id;
         console.log("note for article id: ", id);
         console.log("req.body: ", req.body)
 
-
         db.Note.create(req.body)
-        .then(function(dbNote) {
+        .then(dbNote => {
             return db.Article.findByIdAndUpdate(
                 {"_id": id}, {"$push": {note: dbNote._id} }, {new: true});
         })
-        .then(function(dbArticle) {
+        .then(dbArticle => {
             res.json(dbArticle)
         })
-        .catch(function(err) {
-            console.log(err);
-        });    
+        .catch(err => console.log(err));
     });
 
     //route to delete note
@@ -152,13 +169,11 @@ module.exports = function(app) {
                 { "note": req.params.id },
                 { "$pull": { "note": req.params.id } },
             )
-            .then(function(dbArticle){
+            .then(dbArticle => {
                 res.json(dbArticle);
             })
-            .catch(function(err) {
-                console.log(err)
+            .catch(err => console.log(err));
             });
-        });
     });
 
 };

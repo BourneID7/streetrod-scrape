@@ -17,7 +17,7 @@ $("#clear").on("click", function() {
     .then(function() {
         $.ajax({
             method: "GET",
-            url: "/articles"
+            url: "/"
         })
     });
     location.reload(true);
@@ -35,7 +35,7 @@ $(".btn-save").on("click", function(){
     .then(function() {
         $.ajax({
             method: "GET",
-            url: "/articles"
+            url: "/"
         })
         .then(function(){
            location.assign("/saved");
@@ -55,7 +55,7 @@ $(".btn-unsave").on("click", function(){
     .then(function() {
         $.ajax({
             method: "GET",
-            url: "/articles"
+            url: "/saved"
         })
         .then(function(){
            location.reload(true);
@@ -77,7 +77,7 @@ $(".save-note").on("click", function(){
     .then(function(){
         $.ajax({
             method: "GET",
-            url: "/articles"
+            url: "/saved"
         })
         .then(function(){
            location.reload(true);
@@ -95,7 +95,7 @@ $(".delete-note").on("click", function(){
     .then(function() {
         $.ajax({
             method: "GET",
-            url: "/articles"
+            url: "/saved"
         })
         .then(function(){
            location.reload(true);
